@@ -237,6 +237,29 @@ function importAmazonRecent(csvText, months) {
     ((tSortEnd - tSortStart) / 1000).toFixed(2) + " s"
   );
 
+  // Filter Category column to show blanks only (new Amazon rows to categorize)
+  const catCol = tillerCols["Category"] || tillerCols["Categories"];
+  if (catCol) {
+    try {
+      let filter = sheet.getFilter();
+      const lastRow = sheet.getLastRow();
+      const dataRange = sheet.getRange(1, 1, lastRow, numCols);
+      if (!filter) {
+        filter = dataRange.createFilter();
+      } else {
+        const fr = filter.getRange();
+        if (fr.getNumRows() !== lastRow || fr.getNumColumns() !== numCols) {
+          filter.remove();
+          filter = dataRange.createFilter();
+        }
+      }
+      const criteria = SpreadsheetApp.newFilterCriteria().whenCellEmpty().build();
+      filter.setColumnFilterCriteria(catCol, criteria);
+    } catch (e) {
+      // If filter or Category column fails, don't fail the import
+    }
+  }
+
   const tEnd = Date.now();
   timing.push(
     "Server: TOTAL importAmazonRecent time: " +
