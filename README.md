@@ -33,10 +33,12 @@ To remove imported transactions later, filter the **Metadata** column by **conta
 ### Top menu item
 
 *Tiller Tools → Amazon Orders Import*
+<img width="444" height="117" alt="TopMenu1" src="https://github.com/user-attachments/assets/a69679cc-62cf-4dae-ab30-99abcbd1d45a" />
 
 ### Popup window
 
 *The import dialog with months lookback, file picker, status log, and Close button.*
+<img width="570" height="474" alt="ImportAmazonOrders" src="https://github.com/user-attachments/assets/cd4ebe4e-7b94-407b-a7a0-79b810bbba6b" />
 
 ---
 
