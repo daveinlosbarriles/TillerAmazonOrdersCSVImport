@@ -42,19 +42,38 @@ To remove imported transactions later, filter the **Metadata** column by **conta
 
 ## 3. How to Install It
 
-1. Open your Tiller spreadsheet.
-2. In the top menu, go to **Extensions** → **Apps Script**. A new browser window opens with the code attached to your sheet.
-3. Click **Code.gs** in the left sidebar. The code editor appears on the right.
-4. Unless you need it, delete any default code in that window.
-5. Copy the code from this repo:
-   - From **Code.js** → paste into **Code.gs** (this adds the “Tiller Tools” menu).
-   - Add a new script file **AmazonOrders**, paste the contents of **AmazonOrders.js** (or **amazonorders.gs**), and save as **AmazonOrders.gs**.
-   - Add a new **HTML** file named **AmazonOrdersDialog**, paste the contents of **AmazonOrdersDialog.html**, and save.
-6. Click the **Save project** (disk) button above the code window.
-7. Go back to your Tiller sheet and **reload** it in the browser.
-8. You should now see **Tiller Tools** in the menu bar.
+### Step 1: Open the Apps Script editor and add the script files
 
-The first time you run **Tiller Tools** → **Amazon Orders Import**, Google will ask for permissions. Approve so the script can read your CSV and write to the sheet.
+1. Open your Tiller Google Sheet.
+2. In the menu, click **Extensions** → **Apps Script**.  
+   A new tab opens with the Apps Script editor (code view).
+3. If you see a default file like `Code.gs` with some sample code, you can replace it or add new files. You will create three items in this project:
+   - **Code.gs** – adds the “Tiller Tools” menu to your sheet  
+   - **AmazonOrders.gs** – all the Amazon Orders Import logic  
+   - **AmazonOrdersDialog.html** – the import dialog  
+
+   **Creating or replacing files:**
+   - **Code.gs**  
+     - This application only needs an **onOpen** function that adds the “Tiller Tools” menu with an “Amazon Orders Import” item. You do **not** need to delete any existing code in **Code.gs**.  
+     - If **Code.gs** already exists and has code you want to keep: add the **onOpen** function from the **Code.js** file in this repo. If you already have an **onOpen** function, add the menu line to it:  
+       `SpreadsheetApp.getUi().createMenu("Tiller Tools").addItem("Amazon Orders Import", "importAmazonCSV_LocalUpload").addToUi();`  
+       (The full **Code.js** in the repo shows the complete onOpen; you can copy just that function or merge its menu into yours.)  
+     - If **Code.gs** doesn’t exist or is empty: click **+** → **Script**, name it `Code`, then paste the contents of **Code.js**.  
+     - In Apps Script, script files are saved as **.gs** (not .js). The editor will show “Code.gs” once saved. That’s correct.
+   - **AmazonOrders.gs**  
+     - Click **+** → **Script**, name it `AmazonOrders`, then paste the contents of **AmazonOrders.js** from this repo. It will appear as **AmazonOrders.gs**.
+   - **AmazonOrdersDialog.html**  
+     - Click **+** → **HTML**, name it `AmazonOrdersDialog`, then paste the contents of **AmazonOrdersDialog.html** from this repo. Leave the name as **AmazonOrdersDialog** (no “.html” in the file list is fine).
+
+4. Save everything: **File** → **Save** (or Ctrl+S). Give the project a name (e.g. “Tiller Amazon Orders Import”) if prompted.
+
+5. **Permissions (first run):**  
+   The first time you use the script (e.g. reload the sheet and open **Tiller Tools** → **Amazon Orders Import**), Google will ask you to authorize the app:
+   - Click **Review permissions**, choose your account, then **Advanced** → **Go to [project name] (unsafe)** (this is your own script).
+   - Click **Allow**.  
+   This lets the script read your CSV and write to the sheet. No data is sent to anyone else.
+
+6. Go back to your Tiller sheet and **reload** it in the browser. You should now see **Tiller Tools** in the menu bar.
 
 ---
 
@@ -84,7 +103,7 @@ The importer writes to these columns on your Transactions sheet:
 | **Date Added**  | Today’s date |
 | **Account**     | Tiller account for the transaction. You can change the default in the code. |
 | **Account #**   | Tiller account number. You can change the default in the code. |
-| **Institution** | Institution name |
+| **Institution** | Institution name. You can change the default in the code. |
 | **Account ID**  | Tiller account ID. You can change the default in the code. |
 | **Metadata**    | `Imported by AmazonCSVImporter on <date/time>` |
 
@@ -147,13 +166,7 @@ const TILLER_CONFIG = {
 
 ### Duplicate Detection
 
-Duplicates are prevented by **exact match on Full Description**. If the same Order ID + Product + ASIN already exists in your Transactions sheet, that row is skipped.
-
----
-
-## Help
-
-For more detail and tips: **[Amazon Orders Import Help](https://docs.google.com/document/d/1Mx38hFE2tKHGmD8hKKC9u4uFgOYyC_FcjwUH5Gops84/edit?usp=sharing)** (also linked in the import dialog).
+Duplicates are prevented by **exact match on Full Description**. This column was previously used by the Tiller Community Amazon CSV importer. If the same Order ID + Product + ASIN already exists in your Transactions sheet, that row is skipped, whether you are using this importer or the old one.
 
 ---
 
